@@ -12,6 +12,10 @@
   <img src="https://img.shields.io/badge/Frontend-React-61DAFB" alt="React"/>
 </div>
 
+## Public standalone interactive companion
+
+[Explore MobilityPulse AI in the browser](https://harshakavali81-collab.github.io/harshavardhan-portfolio/mobilitypulse-explorer.html). This self-contained portfolio companion provides six interactive views, fictional route maps, sample charts, and GTFS wheelchair-boarding metadata. Its default figures are **illustrative synthetic samples**, not live operator data, measured route punctuality or real ETAs.
+
 ## Featured in my personal portfolio
 
 MobilityPulse AI now has a full recruiter-friendly, six-section [portfolio case study](https://github.com/harshakavali81-collab/harshavardhan-portfolio/blob/main/cases/mobilitypulse.html) within my personal [portfolio repository](https://github.com/harshakavali81-collab/harshavardhan-portfolio). The case study includes all ten original project graphics, system architecture, the data pipeline, engineering verification, and clearly labeled synthetic-data limitations.
