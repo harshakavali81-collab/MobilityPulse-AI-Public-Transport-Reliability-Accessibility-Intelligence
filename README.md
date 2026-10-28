@@ -12,6 +12,10 @@
   <img src="https://img.shields.io/badge/Frontend-React-61DAFB" alt="React"/>
 </div>
 
+## Featured in my personal portfolio
+
+MobilityPulse AI now has a full recruiter-friendly, six-section [portfolio case study](https://github.com/harshakavali81-collab/harshavardhan-portfolio/blob/main/cases/mobilitypulse.html) within my personal [portfolio repository](https://github.com/harshakavali81-collab/harshavardhan-portfolio). The case study includes all ten original project graphics, system architecture, the data pipeline, engineering verification, and clearly labeled synthetic-data limitations.
+
 ## Project overview
 
 **MobilityPulse AI** is an end-to-end **portfolio demonstration** for exploring route reliability, arrival delay patterns, stop accessibility metadata, and data-feed diagnostics. It combines GTFS Schedule ingestion, data quality checks, historical observed-event analytics, offline machine-learning evaluation, an API, a responsive React dashboard, and Power BI export tooling.
