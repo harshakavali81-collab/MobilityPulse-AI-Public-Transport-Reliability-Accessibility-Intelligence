@@ -1,0 +1,9 @@
+import React from 'react';
+import {DailyChart,RouteBars} from '../components/Charts.jsx';
+const pct=v=>v==null?'N/A':v.toFixed(1)+'%';
+export default function Reliability({data}){
+ return <section><div className="eyebrow">SERVICE QUALITY METRICS</div><div className="page-title"><div><h1>Reliability insights<span className="accent">.</span></h1><p>Observed historical adherence in fictional examples — never scheduled-only estimates.</p></div></div>
+ <div className="layout-two"><article className="panel"><div className="panel-title"><h2>On-time performance</h2><span className="tag">BY ROUTE</span></div><RouteBars data={data.reliability}/></article><article className="panel"><div className="panel-title"><h2>Performance over time</h2><span className="tag">DAILY</span></div><DailyChart data={data.trends}/></article></div>
+ <article className="panel"><div className="panel-title"><h2>Reliability scorecard</h2><span className="tag">OBSERVED EVENTS</span></div><div className="table-scroll"><table><thead><tr><th>Route</th><th>On time</th><th>Mean delay</th><th>Observed stop events</th><th>Cancelled stop events</th></tr></thead><tbody>{data.reliability.map(r=><tr key={r.route_id}><td><span className="route-square small" style={{background:r.route_color}}>{r.route_short_name}</span> {r.route_long_name}</td><td>{pct(r.on_time_pct)}</td><td>{r.mean_delay_minutes??'N/A'} min</td><td>{r.observed_stop_events}</td><td>{r.cancelled_stop_events}</td></tr>)}</tbody></table></div></article>
+ <article className="panel"><div className="panel-title"><h2>Observed headways</h2><span className="tag">SAME STOP + DAY</span></div><div className="table-scroll"><table><thead><tr><th>Route</th><th>Median observed headway</th><th>Intervals measured</th></tr></thead><tbody>{data.headways.map(r=><tr key={r.route_id}><td>{r.route_id}</td><td>{r.median_headway_minutes} min</td><td>{r.observed_intervals}</td></tr>)}</tbody></table></div></article></section>
+}
