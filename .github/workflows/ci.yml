@@ -48,9 +48,9 @@ jobs:
         run: docker compose up -d --build
       - name: Smoke-test backend and reverse-proxied frontend
         run: |
-          curl --fail --retry 20 --retry-delay 3 --retry-connrefused http://127.0.0.1:8000/api/health
-          curl --fail --retry 20 --retry-delay 3 --retry-connrefused http://127.0.0.1:8080/
-          curl --fail http://127.0.0.1:8080/api/overview | python3 -c "import json,sys; data=json.load(sys.stdin); assert data['metadata']['data_mode']=='synthetic'"
+          curl --fail --retry-all-errors --retry 30 --retry-delay 2 --retry-connrefused --max-time 10 http://127.0.0.1:8000/api/health
+          curl --fail --retry-all-errors --retry 30 --retry-delay 2 --retry-connrefused --max-time 10 http://127.0.0.1:8080/
+          curl --fail --retry-all-errors --retry 30 --retry-delay 2 --retry-connrefused --max-time 10 http://127.0.0.1:8080/api/overview | python3 -c "import json,sys; data=json.load(sys.stdin); assert data['metadata']['data_mode']=='synthetic'"
       - name: Container logs on failure
         if: failure()
         run: docker compose logs --tail=120
