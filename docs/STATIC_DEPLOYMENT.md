@@ -37,3 +37,9 @@ VITE_STATIC_DEMO=true VITE_BASE_PATH=/demo/ npm run build
 ```
 
 For Windows PowerShell, set environment variables with `$env:VITE_STATIC_DEMO = 'true'` and `$env:VITE_BASE_PATH = '/demo/'` before `npm run build`.
+
+## Downloadable build even when Pages is disabled
+
+The Pages workflow uploads a separate artifact named `mobilitypulse-portfolio-and-offline-demo` via GitHub Actions before attempting the Pages configuration step. On the [Pages workflow](https://github.com/harshakavali81-collab/MobilityPulse-AI-Public-Transport-Reliability-Accessibility-Intelligence/actions/workflows/pages.yml), open a recent run and download the artifact (subject to GitHub artifact retention and account access). It contains the ready-built static site regardless of whether the final deployment step succeeds.
+
+Enabling Pages remains a **separate owner-authorized repository setting**. The default GitHub Actions token cannot automatically enable GitHub Pages using the configure-pages enablement option.

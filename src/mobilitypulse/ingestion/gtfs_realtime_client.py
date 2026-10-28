@@ -9,6 +9,7 @@ import os
 import urllib.request
 from urllib.parse import urlsplit
 from mobilitypulse.ingestion.gtfs_realtime_loader import parse_feed
+from mobilitypulse.ingestion.realtime_predictions import parse_trip_predictions
 
 MAX_BYTES=10_000_000
 
@@ -46,6 +47,8 @@ def download_diagnostics(url=None,allow_hosts=None):
     if len(body)>MAX_BYTES:
         raise ValueError("GTFS-RT response exceeds 10 MB limit")
     snapshot=parse_feed(body)
+    snapshot["publisher_predictions"]=parse_trip_predictions(body)
+    snapshot["publisher_predictions_are_observed_arrivals"]=False
     snapshot["source"]="authorized operator GTFS-Realtime"
     snapshot["verified_service_quality"]=False
     snapshot["used_for_arrival_predictions"]=False

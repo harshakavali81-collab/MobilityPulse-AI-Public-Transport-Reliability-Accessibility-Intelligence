@@ -23,3 +23,9 @@ Actual operational integration still requires matching trip IDs and service date
 Spec references:
 - https://gtfs.org/documentation/realtime/reference/
 - https://gtfs.org/documentation/realtime/realtime-best-practices/
+
+## Publisher-prediction read endpoint
+
+When an authorized feed has been retrieved with `scripts/refresh_realtime.py`, the API can expose up to 150 decoded GTFS-Realtime trip-update estimated arrivals via `GET /api/feed/predictions` only while the feed header timestamp is fresh (within 90 seconds). These fields are explicitly **publisher predictions**, never actual arrivals, so they are excluded from on-time metrics and historical model evaluation. No location-based vehicle tracking is implemented.
+
+The GitHub Pages browser demo exports `/feed/predictions` as an empty synthetic snapshot. The optional backend endpoint requires an approved operator feed, polling cadence and server-side hosting; a configured downloader alone is not production validation.

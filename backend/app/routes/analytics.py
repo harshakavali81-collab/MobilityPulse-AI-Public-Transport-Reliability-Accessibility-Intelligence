@@ -54,3 +54,28 @@ def feed_status():
             "message":("Fresh authorized protobuf feed diagnostics detected; not connected to arrivals or vehicle tracking."
                        if fresh else "No verified fresh GTFS-Realtime connection is configured."),
             "metadata":c["metadata"]}
+
+@router.get("/feed/predictions")
+def feed_predictions():
+    """Publisher trip-update estimates with staleness gate and explicit provenance."""
+    c=catalog()
+    path=Path(os.getenv("GTFS_RT_STATE_PATH","data/interim/feed_state.json"))
+    try:
+        snapshot=json.loads(path.read_text(encoding="utf-8")) if path.is_file() else None
+    except (OSError,ValueError,TypeError):
+        snapshot=None
+    verified_source=isinstance(snapshot,dict) and snapshot.get("source")=="authorized operator GTFS-Realtime"
+    timestamp=snapshot.get("feed_timestamp") if verified_source else None
+    age=(datetime.now(timezone.utc).timestamp()-timestamp) if isinstance(timestamp,(int,float)) else None
+    fresh=age is not None and 0<=age<=90
+    values=snapshot.get("publisher_predictions",[]) if fresh else []
+    return {
+        "items":values if isinstance(values,list) else [],
+        "feed_fresh":fresh,
+        "data_mode":"publisher_gtfs_realtime_predictions" if fresh else "unavailable",
+        "not_actual_arrivals":True,
+        "not_verified_operational_eta":True,
+        "not_used_in_reliability_metrics":True,
+        "message":"GTFS-RT estimates are not actual arrival observations." if fresh else "No fresh authorized prediction feed available.",
+        "metadata":c["metadata"],
+    }

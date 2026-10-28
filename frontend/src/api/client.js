@@ -17,3 +17,5 @@ export const getTrends=()=>api('/analytics/trends');
 export const getHeadways=()=>api('/analytics/headways');
 export const getAccessibility=()=>api('/accessibility');
 export const getFeed=()=>api('/feed/status');
+
+export const getPredictions=()=>api('/feed/predictions');

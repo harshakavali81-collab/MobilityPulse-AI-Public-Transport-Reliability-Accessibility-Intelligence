@@ -6,11 +6,11 @@ import StopDetails from './pages/StopDetails.jsx';
 import Reliability from './pages/Reliability.jsx';
 import AccessPage from './pages/Accessibility.jsx';
 import FeedStatus from './pages/FeedStatus.jsx';
-import {getOverview,getRoutes,getStops,getReliability,getTrends,getHeadways,getAccessibility,getFeed} from './api/client.js';
+import {getOverview,getRoutes,getStops,getReliability,getTrends,getHeadways,getAccessibility,getFeed,getPredictions} from './api/client.js';
 const tabs=[['dashboard','Overview',LayoutDashboard],['routes','Route explorer',Route],['stops','Stop details',MapPin],['reliability','Reliability',ChartNoAxesCombined],['accessibility','Accessibility',Accessibility],['feed','Feed health',Activity]];
 export default function App(){
  const [tab,setTab]=useState('dashboard'),[data,setData]=useState(null),[error,setError]=useState(''),[loading,setLoading]=useState(true),[selectedStop,setSelectedStop]=useState(null),[collapsed,setCollapsed]=useState(false);
- useEffect(()=>{let active=true;Promise.all([getOverview(),getRoutes(),getStops(),getReliability(),getTrends(),getHeadways(),getAccessibility(),getFeed()]).then(([overview,routes,stops,reliability,trends,headways,accessibility,feed])=>{if(active){setData({overview,routes:routes.items,stops:stops.items,reliability:reliability.items,trends:trends.items,headways:headways.items,accessibility:accessibility.items,feed});setLoading(false)}}).catch(e=>{if(active){setError(e.message);setLoading(false)}});return()=>{active=false}},[]);
+ useEffect(()=>{let active=true;Promise.all([getOverview(),getRoutes(),getStops(),getReliability(),getTrends(),getHeadways(),getAccessibility(),getFeed(),getPredictions()]).then(([overview,routes,stops,reliability,trends,headways,accessibility,feed,predictions])=>{if(active){setData({overview,routes:routes.items,stops:stops.items,reliability:reliability.items,trends:trends.items,headways:headways.items,accessibility:accessibility.items,feed,predictions});setLoading(false)}}).catch(e=>{if(active){setError(e.message);setLoading(false)}});return()=>{active=false}},[]);
  const pages={dashboard:<Dashboard data={data} onOpenRoute={()=>setTab('routes')}/>,
  routes:<RouteExplorer data={data} selectStop={s=>{setSelectedStop(s);setTab('stops')}}/>,
  stops:<StopDetails data={data} selectedStop={selectedStop} setSelectedStop={setSelectedStop}/>,

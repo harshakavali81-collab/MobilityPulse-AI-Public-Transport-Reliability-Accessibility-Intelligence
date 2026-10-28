@@ -21,9 +21,12 @@ EXPORTS={
     "analytics/trends":"/api/analytics/trends",
     "accessibility":"/api/accessibility",
     "feed/status":"/api/feed/status",
+    "feed/predictions":"/api/feed/predictions",
 }
 def build(out):
     catalog.cache_clear()
+    # Never export any externally refreshed RT state into the public static demo.
+    os.environ["GTFS_RT_STATE_PATH"]=str(ROOT/"data"/"static-offline-feed-state-never-exists.json")
     out=Path(out)
     with TestClient(app) as client:
         for name,endpoint in EXPORTS.items():

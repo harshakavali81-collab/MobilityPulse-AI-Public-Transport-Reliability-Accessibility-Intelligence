@@ -86,6 +86,19 @@ The project includes a GitHub Pages workflow that publishes the recruiter portfo
 
 **One-time owner action needed:** In GitHub → Settings → Pages → Build and deployment → Source, choose **GitHub Actions**. The connected GitHub tool can push and test the workflow but cannot change Pages settings. Do not treat these as live links until the deploy check succeeds.
 
+## Hyderabad GTFS Schedule — optional real source
+
+TGSRTC publishes static GTFS schedules via its open-data initiative. The optional **opt-in** downloader runs after you have reviewed the provider's terms:
+
+```bash
+python scripts/download_hyderabad_schedule.py --accept-provider-terms
+GTFS_ZIP_PATH=data/raw/hyderabad_tgsrtc_gtfs.zip uvicorn backend.app.main:app
+```
+
+The download is **not automatic**. The GTFS data is schedule-only; observed punctuality remains unavailable without separately validated historical arrivals. [Source and data limitations](docs/HYDERABAD_FEED.md).
+
+A separate [GTFS-Realtime predictions API](docs/LIVE_DATA_INTEGRATION.md) is also implemented for explicitly authorized live protobuf sources. Publisher predictions are **not actual arrival observations**.
+
 ## Quick start
 
 **Requirements:** Python 3.10+, Node.js 20.19+ or 22+, and internet access for dependency installation.
