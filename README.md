@@ -85,7 +85,7 @@ The project includes a GitHub Pages workflow that publishes the recruiter portfo
 - After GitHub Pages is enabled and deployment succeeds: [Interactive synthetic dashboard](https://harshakavali81-collab.github.io/MobilityPulse-AI-Public-Transport-Reliability-Accessibility-Intelligence/demo/)
 - [Pages deployment instructions](docs/STATIC_DEPLOYMENT.md), [Authorized realtime feed diagnostics](docs/LIVE_DATA_INTEGRATION.md), [API security limits](docs/SECURITY_HARDENING.md)
 
-**One-time owner action needed:** In GitHub → Settings → Pages → Build and deployment → Source, choose **GitHub Actions**. The connected GitHub tool can push and test the workflow but cannot change Pages settings. Do not treat these as live links until the deploy check succeeds.
+**One-time owner action needed:** In GitHub → Settings → Pages → Build and deployment → Source, choose **GitHub Actions**. Until activated, the workflow builds and stores a downloadable site ZIP instead of reporting a false deployment success. Do not treat public links as live until the Deploy job succeeds.
 
 ## Hyderabad GTFS Schedule — optional real source
 
