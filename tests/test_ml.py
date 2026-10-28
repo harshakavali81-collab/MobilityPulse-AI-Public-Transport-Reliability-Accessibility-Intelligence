@@ -19,3 +19,15 @@ def test_model_train_and_evaluate():
     assert metrics["test_rows"]>10
     assert math.isfinite(metrics["model_mae"])
     assert metrics["operationally_validated"] is False
+
+def test_no_future_delay_leakage_in_lag_feature():
+    from collections import defaultdict
+    grouped=defaultdict(list)
+    for record in make_demo()["observations"]:
+        grouped[record["trip_id"]].append(record)
+    for events in grouped.values():
+        rows=sorted(events,key=lambda x:x["stop_sequence"])
+        assert rows[0]["preceding_delay_minutes"]==0
+        for prev,current in zip(rows,rows[1:]):
+            expected=max(0,prev["observed_delay_minutes"] or 0)
+            assert abs(current["preceding_delay_minutes"]-round(expected,2))<1e-6

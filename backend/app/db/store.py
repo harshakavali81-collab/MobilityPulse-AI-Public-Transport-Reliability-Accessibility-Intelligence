@@ -35,6 +35,7 @@ def make_demo():
                 cancelled=rng.random() < (0.065 if route["route_id"]=="R4" else 0.045)
                 base={"R1":2.2,"R2":4.3,"R3":6.1,"R4":3.7}[route["route_id"]]
                 delay=max(-3,rng.gauss(base+(2 if trip in [0,1,5] else 0),3.5))
+                previous_observed_delay=0.0
                 for idx,sid in enumerate(route["stop_ids"]):
                     sched=scheduled+timedelta(minutes=idx*6)
                     observed_delay=round(max(-3,delay+idx*0.25+rng.gauss(0,0.6)),2)
@@ -43,8 +44,9 @@ def make_demo():
                         stop_id=sid,stop_sequence=idx+1,scheduled_arrival=sched.isoformat(),
                         actual_arrival=actual,observed_delay_minutes=None if cancelled else observed_delay,
                         status="cancelled" if cancelled else "observed",source="synthetic",
-                        preceding_delay_minutes=round(max(0,observed_delay-rng.random()*3),2),
+                        preceding_delay_minutes=round(max(0,previous_observed_delay),2),
                         hour=hr,day_of_week=day.weekday()))
+                    previous_observed_delay=observed_delay if not cancelled else 0.0
     return dict(metadata=dict(dataset="Fictional Sample City",data_mode="synthetic",observations_are_real=False,
         live_tracking=False,timezone="UTC",source="generated deterministic demo",updated_at="2026-10-21T23:59:00Z"),
         stops=stops,routes=routes,observations=obs,
