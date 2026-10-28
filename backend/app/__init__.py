@@ -1,0 +1,1 @@
+"""MobilityPulse FastAPI application."""
