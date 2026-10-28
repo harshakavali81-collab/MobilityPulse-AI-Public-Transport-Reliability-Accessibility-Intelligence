@@ -1,4 +1,7 @@
 from collections import defaultdict
+from datetime import datetime,timezone
+from pathlib import Path
+import json,os
 from fastapi import APIRouter
 from backend.app.db.store import catalog
 from mobilitypulse.analytics.on_time_performance import summary
@@ -31,6 +34,23 @@ def alerts():
 @router.get("/feed/status")
 def feed_status():
     c=catalog()
-    return {"mode":c["metadata"]["data_mode"],"live_tracking":False,
-       "gtfs_realtime_available":False,"last_realtime_update":None,
-       "message":"No verified live GTFS-Realtime connection is configured.","metadata":c["metadata"]}
+    path=Path(os.getenv("GTFS_RT_STATE_PATH","data/interim/feed_state.json"))
+    snapshot=None
+    if path.is_file():
+        try:
+            snapshot=json.loads(path.read_text(encoding="utf-8"))
+            if snapshot.get("source")!="authorized operator GTFS-Realtime":snapshot=None
+        except (OSError,ValueError,TypeError):snapshot=None
+    timestamp=snapshot.get("feed_timestamp") if snapshot else None
+    age=(datetime.now(timezone.utc).timestamp()-timestamp) if isinstance(timestamp,(int,float)) else None
+    fresh=age is not None and 0<=age<=90
+    return {"mode":c["metadata"]["data_mode"],
+            "live_tracking":False,
+            "gtfs_realtime_available":bool(snapshot and fresh),
+            "last_realtime_update":datetime.fromtimestamp(timestamp,timezone.utc).isoformat() if timestamp else None,
+            "realtime_feed_fresh":fresh,
+            "realtime_age_seconds":round(age,1) if age is not None else None,
+            "diagnostics_only":True,
+            "message":("Fresh authorized protobuf feed diagnostics detected; not connected to arrivals or vehicle tracking."
+                       if fresh else "No verified fresh GTFS-Realtime connection is configured."),
+            "metadata":c["metadata"]}
