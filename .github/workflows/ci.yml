@@ -1,0 +1,39 @@
+name: Build and Test
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11', cache: pip}
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Verify synthetic fixture creation
+        run: python scripts/generate_demo.py
+      - name: Python API and data tests
+        run: pytest -q
+      - name: Validate Power BI exports
+        run: python scripts/export_powerbi.py
+      - name: Evaluate synthetic demonstration model
+        run: python -m mobilitypulse.models.train_delay_model --allow-synthetic
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+      - name: Build web application
+        working-directory: frontend
+        run: npm run build
