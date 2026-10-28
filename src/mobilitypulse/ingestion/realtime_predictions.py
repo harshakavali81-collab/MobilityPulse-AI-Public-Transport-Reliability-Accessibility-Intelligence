@@ -12,6 +12,8 @@ def parse_trip_predictions(body: bytes, max_items: int=150) -> list[dict]:
     from google.transit import gtfs_realtime_pb2
     if not 0 <= max_items <= 1000:
         raise ValueError("max_items must be between 0 and 1000")
+    if max_items==0:
+        return []
     feed=gtfs_realtime_pb2.FeedMessage()
     feed.ParseFromString(body)
     rows=[]

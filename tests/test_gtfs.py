@@ -34,3 +34,20 @@ def test_invalid_latitude():
     frames["stops.txt"]["stop_lat"]="900"
     frames["stops.txt"]["stop_lon"]="78.5"
     assert any("invalid stop_lat" in e for e in validate(frames))
+
+def test_representative_gtfs_trip_sorts_stop_sequence_numerically():
+    stops=pd.DataFrame([{"stop_id":f"S{x}","stop_name":f"Stop {x}","stop_lat":"17","stop_lon":"78"} for x in (1,2,10)])
+    frames={
+        "routes.txt":pd.DataFrame([{"route_id":"R1","route_type":"3"}]),
+        "stops.txt":stops,
+        "trips.txt":pd.DataFrame([
+            {"route_id":"R1","trip_id":"T1","service_id":"W"},
+            {"route_id":"R1","trip_id":"T2","service_id":"W"}]),
+        "stop_times.txt":pd.DataFrame([
+            {"trip_id":"T1","stop_id":"S10","stop_sequence":"10"},
+            {"trip_id":"T1","stop_id":"S1","stop_sequence":"1"},
+            {"trip_id":"T1","stop_id":"S2","stop_sequence":"2"},
+            {"trip_id":"T2","stop_id":"S2","stop_sequence":"1"}])
+    }
+    item=to_catalog(frames)["routes"][0]
+    assert item["stop_ids"]==["S1","S2","S10"]

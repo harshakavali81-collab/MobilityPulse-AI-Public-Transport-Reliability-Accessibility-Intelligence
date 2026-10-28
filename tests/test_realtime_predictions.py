@@ -35,3 +35,14 @@ def test_empty_prediction_endpoint_in_demo(client,monkeypatch,tmp_path):
     assert x["items"]==[]
     assert x["not_actual_arrivals"] is True
     assert x["feed_fresh"] is False
+
+def test_zero_limit_yields_no_predictions():
+    feed=pb.FeedMessage()
+    feed.header.gtfs_realtime_version="2.0"
+    e=feed.entity.add()
+    e.id="T"
+    e.trip_update.trip.trip_id="T"
+    update=e.trip_update.stop_time_update.add()
+    update.stop_id="S"
+    update.arrival.delay=5
+    assert parse_trip_predictions(feed.SerializeToString(),max_items=0)==[]
