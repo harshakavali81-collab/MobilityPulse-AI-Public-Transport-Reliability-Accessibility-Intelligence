@@ -33,6 +33,7 @@
 | Reporting | Reproducible Power BI/Excel CSV exports and sample DAX |
 | Portfolio | Standalone HTML case study, docs and ten custom SVG graphics |
 
+<a id="visual-gallery"></a>
 ## Visual gallery
 
 | Architecture | ETL / Pipeline |
