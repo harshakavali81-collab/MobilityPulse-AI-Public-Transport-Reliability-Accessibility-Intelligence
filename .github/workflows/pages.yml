@@ -1,0 +1,60 @@
+name: Publish MobilityPulse Portfolio and Offline Demo
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "mobilitypulse-pages"
+  cancel-in-progress: false
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install backend for reproducible static snapshots
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+      - name: Export only synthetic API snapshots
+        run: python scripts/export_static_api.py
+        env:
+          PYTHONPATH: .:src
+      - name: Build standalone demo dashboard for Pages subpath
+        working-directory: frontend
+        env:
+          VITE_STATIC_DEMO: "true"
+          VITE_BASE_PATH: /MobilityPulse-AI-Public-Transport-Reliability-Accessibility-Intelligence/demo/
+        run: |
+          npm install --no-audit --no-fund
+          npm run build
+      - name: Prepare portfolio and offline demo site
+        run: |
+          mkdir -p site/portfolio site/assets site/demo
+          cp portfolio/index.html site/portfolio/index.html
+          cp assets/*.svg site/assets/
+          cp -r frontend/dist/. site/demo/
+          printf '%s\n' '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0; url=portfolio/"><title>MobilityPulse AI</title><a href="portfolio/">Open the MobilityPulse AI portfolio</a></html>' > site/index.html
+          touch site/.nojekyll
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages bundle
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Publish site
+        id: deployment
+        uses: actions/deploy-pages@v4

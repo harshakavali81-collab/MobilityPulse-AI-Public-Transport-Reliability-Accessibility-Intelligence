@@ -1,2 +1,6 @@
 import {defineConfig} from 'vite';
-export default defineConfig({server:{host:'0.0.0.0',proxy:{'/api':'http://localhost:8000'}},preview:{host:'0.0.0.0'}});
+export default defineConfig({
+  base:process.env.VITE_BASE_PATH||'/',
+  server:{host:'0.0.0.0',proxy:{'/api':'http://localhost:8000'}},
+  preview:{host:'0.0.0.0'}
+});
